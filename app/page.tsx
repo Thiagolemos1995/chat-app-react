@@ -1,95 +1,76 @@
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Fade,
+  Flex,
+  HStack,
+  Heading,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+
+const LOGO_HEIGHT = 450;
+const LOGO_WIDTH = 650;
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main>
+      <Flex h="calc(100vh - 60px)" flexDir="column">
+        <Fade in>
+          <Flex
+            bgGradient="linear(to-br, #0D0D0D, #2D2D2D)"
+            h="500px"
+            p="1rem 6rem"
+            borderBottomRadius="8px"
+            justifyContent="space-between"
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+            <Flex
+              flexDir="column"
+              maxW="700px"
+              justifyContent="center"
+              gap="2rem"
+            >
+              <Heading color="white">
+                If you are looking to know or chat with your friends, here is
+                the place.
+              </Heading>
+              <Text color="white">
+                Join a huge community, to meet and chat with lots of people, in
+                a simple and fast way
+              </Text>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+              <Flex gap="50px">
+                <Button
+                  size="lg"
+                  backgroundColor="#6EFA96"
+                  _hover={{ backgroundColor: "#0AC77C" }}
+                  color="#0D0D0D"
+                >
+                  Sign up
+                </Button>
+                <Button variant="ghost" size="lg" color="#6EFA96">
+                  Sign in
+                </Button>
+              </Flex>
+            </Flex>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+            <VStack maxW="700px">
+              <Image
+                src="/chat_app.png"
+                alt="chat app"
+                width={LOGO_WIDTH}
+                height={LOGO_HEIGHT}
+              />
+            </VStack>
+          </Flex>
+        </Fade>
+      </Flex>
     </main>
   );
 }
