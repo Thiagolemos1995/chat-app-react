@@ -32,7 +32,7 @@ import { RegisterSchema } from "@/schemas";
 import {
   MessageResponseType,
   register as registerServer,
-} from "@/actions/register";
+} from "@/services/actions/register";
 
 export default function RegisterForm() {
   const [validateResponse, setValidateResponse] = useState<MessageResponseType>(

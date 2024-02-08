@@ -29,7 +29,7 @@ import Social from "./Social";
 import FormMessages from "./FormMessages";
 
 import { LoginSchema } from "@/schemas";
-import { MessageResponseType, login } from "@/actions/login";
+import { MessageResponseType, login } from "@/services/actions/login";
 
 export default function LoginForm() {
   const [validateResponse, setValidateResponse] = useState<MessageResponseType>(
