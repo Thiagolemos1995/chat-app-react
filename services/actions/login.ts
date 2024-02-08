@@ -35,8 +35,8 @@ export async function login(
       switch (error.type) {
         case "CredentialsSignin":
           return { type: "error", message: "Invalid credentials" };
-        case "MissingSecret":
-          return { type: "error", message: "Missing Secrets" };
+        case "Verification":
+          return { type: "error", message: "Verification error" };
         default:
           return { type: "error", message: "Something went wrong!" };
       }
