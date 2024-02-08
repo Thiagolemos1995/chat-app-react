@@ -25,13 +25,16 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import Social from "./Social";
 import FormMessages from "./FormMessages";
+import Social from "./Social";
 
-import { LoginSchema } from "@/schemas";
-import { MessageResponseType, login } from "@/actions/login";
+import { RegisterSchema } from "@/schemas";
+import {
+  MessageResponseType,
+  register as registerServer,
+} from "@/actions/register";
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const [validateResponse, setValidateResponse] = useState<MessageResponseType>(
     { type: "info", message: "" }
   );
@@ -42,16 +45,18 @@ export default function LoginForm() {
     register,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       username: "",
+      email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof LoginSchema>) {
-    await login(values).then((data: MessageResponseType) => {
+  async function onSubmit(values: z.infer<typeof RegisterSchema>) {
+    await registerServer(values).then((data: MessageResponseType) => {
       setValidateResponse(data);
     });
     reset();
@@ -107,6 +112,31 @@ export default function LoginForm() {
           </GridItem>
 
           <GridItem colSpan={2}>
+            <FormControl isInvalid={!!errors.username}>
+              <FormLabel
+                htmlFor="email"
+                fontSize="1.2rem"
+                fontWeight="bold"
+                mb="0.5rem"
+              >
+                Email
+              </FormLabel>
+              <Input
+                id="username"
+                variant="flushed"
+                size="lg"
+                placeholder="E-mail"
+                focusBorderColor="#6EFA96"
+                disabled={isSubmitting}
+                {...register("email")}
+              />
+              {errors.email && (
+                <FormErrorMessage>{errors.email.message}</FormErrorMessage>
+              )}
+            </FormControl>
+          </GridItem>
+
+          <GridItem colSpan={2}>
             <FormControl isInvalid={!!errors.password}>
               <FormLabel
                 htmlFor="password"
@@ -132,6 +162,34 @@ export default function LoginForm() {
             </FormControl>
           </GridItem>
 
+          <GridItem colSpan={2}>
+            <FormControl isInvalid={!!errors.confirmPassword}>
+              <FormLabel
+                htmlFor="password"
+                fontSize="1.2rem"
+                fontWeight="bold"
+                mb="0.5rem"
+              >
+                Confirm Password
+              </FormLabel>
+              <Input
+                id="confirmPassword"
+                variant="flushed"
+                size="lg"
+                placeholder="Confirm Password"
+                focusBorderColor="#6EFA96"
+                type="password"
+                disabled={isSubmitting}
+                {...register("confirmPassword")}
+              />
+              {errors.confirmPassword && (
+                <FormErrorMessage>
+                  {errors.confirmPassword.message}
+                </FormErrorMessage>
+              )}
+            </FormControl>
+          </GridItem>
+
           <GridItem colSpan={2} mt="1rem">
             <FormMessages
               type={validateResponse.type}
@@ -149,7 +207,7 @@ export default function LoginForm() {
               color="#0D0D0D"
               isLoading={isSubmitting}
             >
-              Login
+              Register
             </Button>
           </GridItem>
 
@@ -157,14 +215,14 @@ export default function LoginForm() {
             <Divider my="1rem" />
 
             <Flex gap="0.5rem" justifyContent="center">
-              <Text>{`Don't have a account?`} </Text>
-              <Link href="/auth/register">
+              <Text>{`Already have a account?`} </Text>
+              <Link href="/auth/login">
                 <Text
                   fontWeight="bold"
                   color="#0AC77C"
                   _hover={{ textDecoration: "underline" }}
                 >
-                  Sign up here
+                  Sign in here
                 </Text>
               </Link>
             </Flex>
