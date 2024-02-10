@@ -1,8 +1,8 @@
 "use client";
 
-import { useChatRoom } from "@/store/chatRoom.actions";
 import { Button, Flex, Heading, Text } from "@chakra-ui/react";
 import NewChatRoom from "./NewChatRoom";
+import { setChatRoomData } from "@/store/chatRoom.actions";
 
 export interface User {
   id: string;
@@ -14,12 +14,16 @@ export interface ChatRoom {
   id: string;
   title: string;
   description: string;
-  createdAt: string;
-  users?: User[];
 }
 
-export default function ChatList() {
-  const chatList = useChatRoom();
+interface ChatListProps {
+  readonly chatRooms: ChatRoom[];
+}
+
+export default function ChatList({ chatRooms }: ChatListProps) {
+  async function handleSelectChatRoom(chatRoomData: ChatRoom) {
+    setChatRoomData(chatRoomData);
+  }
 
   return (
     <Flex
@@ -53,8 +57,8 @@ export default function ChatList() {
         <NewChatRoom />
       </Flex>
 
-      {chatList
-        ? chatList.map((chat) => (
+      {chatRooms
+        ? chatRooms.map((chat) => (
             <Button
               variant="ghost"
               key={chat.id}
@@ -62,6 +66,7 @@ export default function ChatList() {
               justifyContent="start"
               py="2rem"
               _hover={{ backgroundColor: "#80BA91" }}
+              onClick={() => handleSelectChatRoom(chat)}
             >
               <Flex flexDir="column" gap="0.5rem">
                 <Text fontSize="1.2rem" fontWeight="bold" color="white">

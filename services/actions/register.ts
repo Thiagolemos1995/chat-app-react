@@ -23,7 +23,7 @@ export async function register(
 
   const { username, email, password } = validatedFields.data;
 
-  const hasehdPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
   const existingEmail = await getUserByEmail(email);
   const existingUser = await getUserByUsername(username);
 
@@ -35,7 +35,7 @@ export async function register(
     data: {
       username,
       email,
-      password: hasehdPassword,
+      password: hashedPassword,
     },
   });
 

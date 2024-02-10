@@ -6,6 +6,6 @@ export function useChatRoom() {
   return useSnapshot(store).chatRoom;
 }
 
-export function addChatRoom(chatRoomData: ChatRoom) {
-  store.chatRoom.push(chatRoomData);
+export function setChatRoomData(chatRoomData: ChatRoom) {
+  store.chatRoom = chatRoomData;
 }

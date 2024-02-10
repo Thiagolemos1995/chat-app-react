@@ -1,8 +1,8 @@
 "use client";
 
 import { NewChatRoomSchema } from "@/schemas";
-import { addChatRoom } from "@/store/chatRoom.actions";
-import { AddIcon } from "@chakra-ui/icons";
+import { addChatRoom } from "@/services/actions/addChatRoom";
+import { RiChatNewLine } from "react-icons/ri";
 import {
   Box,
   Button,
@@ -23,12 +23,14 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import moment from "moment";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function NewChatRoom() {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const {
     handleSubmit,
@@ -43,14 +45,11 @@ export default function NewChatRoom() {
     },
   });
 
-  function onSubmit(chatRoomData: z.infer<typeof NewChatRoomSchema>) {
-    addChatRoom({
-      ...chatRoomData,
-      id: Math.random().toString(),
-      createdAt: moment(new Date()).format("DD/MM/YYYY"),
-    });
+  async function onSubmit(chatRoomData: z.infer<typeof NewChatRoomSchema>) {
+    addChatRoom(chatRoomData);
     reset();
     onClose();
+    router.replace(pathname);
   }
 
   return (
@@ -61,11 +60,11 @@ export default function NewChatRoom() {
           _hover={{ backgroundColor: "#80BA91" }}
           onClick={onOpen}
         >
-          <AddIcon />
+          <RiChatNewLine />
         </Button>
       </Box>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
           <ModalHeader>New Chat Room</ModalHeader>
