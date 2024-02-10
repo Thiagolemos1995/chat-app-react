@@ -1,8 +1,8 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { NewChatRoomSchema } from "@/schemas";
-import { addChatRoom } from "@/services/actions/addChatRoom";
-import { RiChatNewLine } from "react-icons/ri";
 import {
   Box,
   Button,
@@ -22,15 +22,13 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { usePathname, useRouter } from "next/navigation";
+import { RiChatNewLine } from "react-icons/ri";
+
+import { addChatRoom } from "@/store/chatRoom.actions";
+import { NewChatRoomSchema } from "@/schemas";
 
 export default function NewChatRoom() {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const router = useRouter();
-  const pathname = usePathname();
 
   const {
     handleSubmit,
@@ -46,10 +44,13 @@ export default function NewChatRoom() {
   });
 
   async function onSubmit(chatRoomData: z.infer<typeof NewChatRoomSchema>) {
-    addChatRoom(chatRoomData);
+    addChatRoom({
+      id: Math.random().toString(),
+      title: chatRoomData.title,
+      description: chatRoomData.description,
+    });
     reset();
     onClose();
-    router.replace(pathname);
   }
 
   return (

@@ -16,17 +16,21 @@ export default function Banner() {
         bgGradient="linear(to-br, #0D0D0D, #2D2D2D)"
         h="500px"
         p="1rem 6rem"
+        mx="5px"
         borderBottomRadius="8px"
         justifyContent="space-between"
+        boxShadow=" 1px 6px 8px #2D2D2D"
       >
         <Flex flexDir="column" maxW="700px" justifyContent="center" gap="2rem">
           <Heading color="white">
-            If you are looking to know or chat with your friends, here is the
-            place.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </Heading>
           <Text color="white">
-            Join a huge community, to meet and chat with lots of people, in a
-            simple and fast way
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+            tristique ante quis consectetur efficitur. Quisque blandit feugiat
+            eros, vitae congue metus laoreet quis. Interdum et malesuada fames
+            ac ante ipsum primis in faucibus. Morbi ac congue urna, non commodo
+            nisi. In in neque vel lorem fringilla posuere non a tellus. urna.
           </Text>
 
           <Flex gap="50px">

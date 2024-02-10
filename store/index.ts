@@ -1,10 +1,15 @@
+import { MessageType } from "@/app/(protected)/chat-dashboard/_components/ChatContent";
 import { ChatRoom } from "@/app/(protected)/chat-dashboard/_components/ChatList";
 import { proxy } from "valtio";
 
 export interface Store {
-  chatRoom: ChatRoom | undefined;
+  chatRoom: ChatRoom[];
+  chatRoomData: ChatRoom | undefined;
+  messages: MessageType[];
 }
 
 export const store = proxy<Store>({
-  chatRoom: undefined,
+  chatRoom: [],
+  chatRoomData: undefined,
+  messages: [],
 });

@@ -11,43 +11,48 @@ import {
   InputRightElement,
   VStack,
   Text,
+  Avatar,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { LuMessageSquareDashed } from "react-icons/lu";
 import { RiChatOffLine } from "react-icons/ri";
 import moment from "moment";
+import { useChatRoomData } from "@/store/chatRoomData.actions";
+import { setNewMessage, useMessages } from "@/store/messages.action";
 import { Session } from "next-auth";
-import { useChatRoom } from "@/store/chatRoom.actions";
-import { sendMessage } from "@/services/actions/sendMessage";
 
 export type MessageType = {
   id: string;
-  author: string;
+  user: {
+    image: string | null;
+    email: string | null;
+  };
   message: string;
-  createdAt: Date;
+  chatRoomId: string;
+  createdAt: string;
 };
 
 interface ChatContentProps {
-  readonly sessionData: Session;
+  readonly session: Session;
 }
 
-export function ChatContent({ sessionData }: ChatContentProps) {
-  const chatRoom = useChatRoom();
+export function ChatContent({ session }: ChatContentProps) {
+  const chatRoom = useChatRoomData();
+  const messages = useMessages();
 
   const [typeMessage, setTypeMessage] = useState("");
-  const [messageData, setMessageData] = useState<MessageType[]>([]);
 
   async function handleTypeMessage(typedMessage: string) {
-    // await sendMessage(typedMessage, chatRoom?.id ?? "");
-    setMessageData((prevMessage) => [
-      ...prevMessage,
-      {
-        id: Math.random().toString(),
-        author: sessionData.user.email ?? "",
-        message: typedMessage,
-        createdAt: new Date(),
+    setNewMessage({
+      id: Math.random().toString(),
+      chatRoomId: chatRoom?.id ?? "",
+      createdAt: moment(new Date()).format("DD/MM/YYYY HH:mm"),
+      message: typeMessage,
+      user: {
+        email: session?.user.email ?? "",
+        image: session?.user.image ?? "",
       },
-    ]);
+    });
   }
 
   return (
@@ -64,7 +69,7 @@ export function ChatContent({ sessionData }: ChatContentProps) {
             <Heading color="white">{chatRoom?.title}</Heading>
           </Box>
           <Box h="100%">
-            {messageData.length <= 0 ? (
+            {messages.length <= 0 ? (
               <VStack h="100%" justifyContent="center" color="white">
                 <LuMessageSquareDashed size="120px" />
                 <Text fontWeight="bold" fontSize="2.5rem">
@@ -80,31 +85,34 @@ export function ChatContent({ sessionData }: ChatContentProps) {
                 justifyContent="end"
                 alignItems="end"
               >
-                {messageData.length > 0
-                  ? messageData.map((message) => (
-                      <Box
-                        overflow="auto"
-                        key={message.id}
-                        backgroundColor="green.100"
-                        p="1rem"
-                        minW="250px"
-                        borderRadius="6px"
-                        my="1rem"
-                      >
-                        <Flex flexDir="column" mb="1rem" gap="0.5rem">
-                          <Text fontWeight="bold" fontSize="1.5rem">
-                            {message.author}
-                          </Text>
-                          <Text>{message.message}</Text>
+                {messages.length > 0
+                  ? messages.map((message) => (
+                      <Flex flexDir="column" key={message.id} my="1rem">
+                        <Flex gap="1rem" alignItems="center">
+                          {message.user.image ? (
+                            <Avatar size="lg" src={message.user.image} />
+                          ) : null}
+                          <Flex
+                            flexDir="column"
+                            mb="0.3rem"
+                            gap="0.1rem"
+                            backgroundColor="green.100"
+                            p="1rem"
+                            minW="250px"
+                            borderRadius="32px"
+                          >
+                            <Text fontWeight="bold">{message.user.email}</Text>
+                            <Text>{message.message}</Text>
+                            <Flex justifyContent="end">
+                              <Text fontSize="0.7rem" fontWeight="bold">
+                                {moment(message.createdAt).format(
+                                  "DD/MM/YYYY hh:mm"
+                                )}
+                              </Text>
+                            </Flex>
+                          </Flex>
                         </Flex>
-                        <Flex justifyContent="end">
-                          <Text fontSize="0.7rem" fontWeight="bold">
-                            {moment(message.createdAt).format(
-                              "DD/MM/YYYY hh:mm"
-                            )}
-                          </Text>
-                        </Flex>
-                      </Box>
+                      </Flex>
                     ))
                   : null}
               </Flex>

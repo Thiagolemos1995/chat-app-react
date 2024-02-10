@@ -2,7 +2,8 @@
 
 import { Button, Flex, Heading, Text } from "@chakra-ui/react";
 import NewChatRoom from "./NewChatRoom";
-import { setChatRoomData } from "@/store/chatRoom.actions";
+import { useChatRoom } from "@/store/chatRoom.actions";
+import { setChatRoomData } from "@/store/chatRoomData.actions";
 
 export interface User {
   id: string;
@@ -16,18 +17,16 @@ export interface ChatRoom {
   description: string;
 }
 
-interface ChatListProps {
-  readonly chatRooms: ChatRoom[];
-}
+export default function ChatList() {
+  const chatRooms = useChatRoom();
 
-export default function ChatList({ chatRooms }: ChatListProps) {
   async function handleSelectChatRoom(chatRoomData: ChatRoom) {
     setChatRoomData(chatRoomData);
   }
 
   return (
     <Flex
-      h="100%"
+      minH="100%"
       overflow="auto"
       flexDir="column"
       w="25%"
