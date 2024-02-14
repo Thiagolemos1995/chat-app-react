@@ -47,6 +47,7 @@ export function ChatList({ sessionData }: ChatListProps) {
 
   return (
     <Flex
+      bgGradient="linear(to-t, #0D0D0D, #2D2D2D)"
       maxH="830px"
       overflow="auto"
       flexDir="column"

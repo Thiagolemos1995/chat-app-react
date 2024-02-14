@@ -63,6 +63,7 @@ export function ChatContent({ session }: ChatContentProps) {
 
   return (
     <Flex
+      bgGradient="linear(to-t, #0D0D0D, #2D2D2D)"
       flexDir="column"
       p="1rem 2rem"
       border="1px"

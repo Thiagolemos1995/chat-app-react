@@ -25,7 +25,7 @@ export default async function RootLayout({
           <UiProvider>
             <Header sessionData={session as Session} />
 
-            <Box bgGradient="linear(to-t, #0D0D0D, #2D2D2D)">{children}</Box>
+            <Box bgImage="/background.jpg">{children}</Box>
           </UiProvider>
         </body>
       </AuthProvider>
