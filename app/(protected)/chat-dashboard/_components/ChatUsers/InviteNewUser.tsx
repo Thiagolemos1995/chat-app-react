@@ -1,10 +1,11 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+import { AddIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Button,
   Flex,
   FormControl,
@@ -20,14 +21,18 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
-import { RiChatNewLine } from "react-icons/ri";
 
-import { addChatRoom } from "@/store/chatRoom.actions";
-import { NewChatRoomSchema } from "@/schemas";
+import { InviteNewUserSchema } from "@/schemas";
+import { setNewRoomUser } from "@/store/userList.actions";
 
-export default function NewChatRoom() {
+interface InviteNewUserProps {
+  readonly chatRoomId: string;
+}
+
+export function InviteNewUser({ chatRoomId }: InviteNewUserProps) {
   const { onOpen, onClose, isOpen } = useDisclosure();
 
   const {
@@ -35,19 +40,19 @@ export default function NewChatRoom() {
     register,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof NewChatRoomSchema>>({
-    resolver: zodResolver(NewChatRoomSchema),
+  } = useForm<z.infer<typeof InviteNewUserSchema>>({
+    resolver: zodResolver(InviteNewUserSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      name: "",
+      email: "",
     },
   });
 
-  async function onSubmit(chatRoomData: z.infer<typeof NewChatRoomSchema>) {
-    addChatRoom({
-      id: Math.random().toString(),
-      title: chatRoomData.title,
-      description: chatRoomData.description,
+  async function onSubmit(userData: z.infer<typeof InviteNewUserSchema>) {
+    setNewRoomUser({
+      name: userData.name,
+      email: userData.email,
+      chatRoomId,
     });
     reset();
     onClose();
@@ -55,20 +60,22 @@ export default function NewChatRoom() {
 
   return (
     <>
-      <Box>
+      <Tooltip label="Invite new user">
         <Button
+          borderRadius="full"
           backgroundColor="#6EFA96"
           _hover={{ backgroundColor: "#80BA91" }}
           onClick={onOpen}
         >
-          <RiChatNewLine />
+          <Flex alignItems="center" gap="1rem">
+            <AddIcon />
+          </Flex>
         </Button>
-      </Box>
-
+      </Tooltip>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>New Chat Room</ModalHeader>
+          <ModalHeader>Invite New User</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Grid
@@ -77,54 +84,52 @@ export default function NewChatRoom() {
               onSubmit={handleSubmit(onSubmit)}
             >
               <GridItem colSpan={2}>
-                <FormControl isInvalid={!!errors.title}>
+                <FormControl isInvalid={!!errors.name}>
                   <FormLabel
-                    htmlFor="title"
+                    htmlFor="name"
                     fontSize="1.2rem"
                     fontWeight="bold"
                     mb="0.5rem"
                   >
-                    Title
+                    Name
                   </FormLabel>
                   <Input
-                    id="title"
+                    id="name"
                     variant="flushed"
                     size="lg"
-                    placeholder="Title"
+                    placeholder="Name"
                     focusBorderColor="#6EFA96"
                     disabled={isSubmitting}
-                    {...register("title")}
+                    {...register("name")}
                   />
-                  {errors.title && (
-                    <FormErrorMessage>{errors.title.message}</FormErrorMessage>
+                  {errors.name && (
+                    <FormErrorMessage>{errors.name.message}</FormErrorMessage>
                   )}
                 </FormControl>
               </GridItem>
 
               <GridItem colSpan={2}>
-                <FormControl isInvalid={!!errors.description}>
+                <FormControl isInvalid={!!errors.email}>
                   <FormLabel
-                    htmlFor="description"
+                    htmlFor="email"
                     fontSize="1.2rem"
                     fontWeight="bold"
                     mb="0.5rem"
                   >
-                    Description
+                    E-mail
                   </FormLabel>
                   <Input
-                    id="description"
+                    id="email"
                     variant="flushed"
                     size="lg"
-                    placeholder="Description"
+                    placeholder="E-mail"
                     focusBorderColor="#6EFA96"
-                    type="description"
+                    type="email"
                     disabled={isSubmitting}
-                    {...register("description")}
+                    {...register("email")}
                   />
-                  {errors.description && (
-                    <FormErrorMessage>
-                      {errors.description.message}
-                    </FormErrorMessage>
+                  {errors.email && (
+                    <FormErrorMessage>{errors.email.message}</FormErrorMessage>
                   )}
                 </FormControl>
               </GridItem>
@@ -149,7 +154,7 @@ export default function NewChatRoom() {
                 color="#0D0D0D"
                 type="submit"
               >
-                Create
+                Invite
               </Button>
             </Flex>
           </ModalFooter>

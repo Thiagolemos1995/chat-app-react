@@ -1,6 +1,9 @@
 "use client";
 
-import { ArrowRightIcon } from "@chakra-ui/icons";
+import { useState } from "react";
+import { Session } from "next-auth";
+import moment from "moment";
+
 import {
   Box,
   Button,
@@ -13,13 +16,14 @@ import {
   Text,
   Avatar,
 } from "@chakra-ui/react";
-import { useState } from "react";
+
+import { ArrowRightIcon } from "@chakra-ui/icons";
 import { LuMessageSquareDashed } from "react-icons/lu";
 import { RiChatOffLine } from "react-icons/ri";
-import moment from "moment";
+
 import { useChatRoomData } from "@/store/chatRoomData.actions";
-import { setNewMessage, useMessages } from "@/store/messages.action";
-import { Session } from "next-auth";
+import { setNewMessage, useMessagesById } from "@/store/messages.actions";
+import { useActiveUser } from "@/store/activeUser.actions";
 
 export type MessageType = {
   id: string;
@@ -38,19 +42,21 @@ interface ChatContentProps {
 
 export function ChatContent({ session }: ChatContentProps) {
   const chatRoom = useChatRoomData();
-  const messages = useMessages();
+  const messages = useMessagesById(chatRoom?.id ?? "");
+  const activeUser = useActiveUser();
 
   const [typeMessage, setTypeMessage] = useState("");
 
   async function handleTypeMessage(typedMessage: string) {
+    setTypeMessage("");
     setNewMessage({
       id: Math.random().toString(),
       chatRoomId: chatRoom?.id ?? "",
       createdAt: moment(new Date()).format("DD/MM/YYYY HH:mm"),
-      message: typeMessage,
+      message: typedMessage,
       user: {
-        email: session?.user.email ?? "",
-        image: session?.user.image ?? "",
+        email: activeUser?.email ?? "",
+        image: activeUser?.image ?? "",
       },
     });
   }
@@ -62,13 +68,14 @@ export function ChatContent({ session }: ChatContentProps) {
       border="1px"
       borderColor="#6EFA96"
       w="50%"
+      maxH="830px"
     >
       {chatRoom ? (
         <>
           <Box>
             <Heading color="white">{chatRoom?.title}</Heading>
           </Box>
-          <Box h="100%">
+          <Box h="830px" overflow="auto">
             {messages.length <= 0 ? (
               <VStack h="100%" justifyContent="center" color="white">
                 <LuMessageSquareDashed size="120px" />
@@ -83,37 +90,48 @@ export function ChatContent({ session }: ChatContentProps) {
                 py="3rem"
                 flexDir="column"
                 justifyContent="end"
-                alignItems="end"
+                // alignItems="end"
               >
                 {messages.length > 0
-                  ? messages.map((message) => (
-                      <Flex flexDir="column" key={message.id} my="1rem">
-                        <Flex gap="1rem" alignItems="center">
-                          {message.user.image ? (
-                            <Avatar size="lg" src={message.user.image} />
-                          ) : null}
-                          <Flex
-                            flexDir="column"
-                            mb="0.3rem"
-                            gap="0.1rem"
-                            backgroundColor="green.100"
-                            p="1rem"
-                            minW="250px"
-                            borderRadius="32px"
-                          >
-                            <Text fontWeight="bold">{message.user.email}</Text>
-                            <Text>{message.message}</Text>
-                            <Flex justifyContent="end">
-                              <Text fontSize="0.7rem" fontWeight="bold">
-                                {moment(message.createdAt).format(
-                                  "DD/MM/YYYY hh:mm"
-                                )}
+                  ? messages.map((message) => {
+                      const isActiveUser =
+                        message.user.email === activeUser?.email;
+                      return (
+                        <Flex
+                          flexDir="column"
+                          key={message.id}
+                          my="1rem"
+                          ml={isActiveUser ? "auto" : ""}
+                        >
+                          <Flex gap="1rem" alignItems="center">
+                            {message.user.image ? (
+                              <Avatar size="lg" src={message.user.image} />
+                            ) : null}
+                            <Flex
+                              flexDir="column"
+                              mb="0.3rem"
+                              gap="0.1rem"
+                              backgroundColor={
+                                isActiveUser ? "green.100" : "gray.100"
+                              }
+                              p="1rem"
+                              minW="250px"
+                              borderRadius="32px"
+                            >
+                              <Text fontWeight="bold">
+                                {message.user.email}
                               </Text>
+                              <Text>{message.message}</Text>
+                              <Flex justifyContent="end">
+                                <Text fontSize="0.7rem" fontWeight="bold">
+                                  {message.createdAt}
+                                </Text>
+                              </Flex>
                             </Flex>
                           </Flex>
                         </Flex>
-                      </Flex>
-                    ))
+                      );
+                    })
                   : null}
               </Flex>
             )}
@@ -121,6 +139,7 @@ export function ChatContent({ session }: ChatContentProps) {
           <Box>
             <InputGroup>
               <Input
+                value={typeMessage}
                 placeholder="Enter your message here"
                 color="white"
                 focusBorderColor="#6EFA96"

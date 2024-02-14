@@ -4,9 +4,13 @@ import { Button, Flex, Heading, Text } from "@chakra-ui/react";
 import NewChatRoom from "./NewChatRoom";
 import { useChatRoom } from "@/store/chatRoom.actions";
 import { setChatRoomData } from "@/store/chatRoomData.actions";
+import { setNewRoomUser } from "@/store/userList.actions";
+import { Session } from "next-auth";
+import { setActiveUser } from "@/store/activeUser.actions";
 
 export interface User {
-  id: string;
+  id?: string;
+  name: string;
   email: string;
   image?: string;
 }
@@ -17,16 +21,33 @@ export interface ChatRoom {
   description: string;
 }
 
-export default function ChatList() {
+interface ChatListProps {
+  readonly sessionData: Session;
+}
+
+export function ChatList({ sessionData }: ChatListProps) {
   const chatRooms = useChatRoom();
 
   async function handleSelectChatRoom(chatRoomData: ChatRoom) {
+    setNewRoomUser({
+      name: sessionData?.user?.name ?? "",
+      email: sessionData?.user?.email ?? "",
+      image: sessionData?.user?.image ?? "",
+      chatRoomId: chatRoomData.id,
+    });
+
+    setActiveUser({
+      name: sessionData?.user?.name ?? "",
+      email: sessionData?.user?.email ?? "",
+      image: sessionData?.user?.image ?? "",
+    });
+
     setChatRoomData(chatRoomData);
   }
 
   return (
     <Flex
-      minH="100%"
+      maxH="830px"
       overflow="auto"
       flexDir="column"
       w="25%"
