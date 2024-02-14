@@ -1,14 +1,18 @@
 "use client";
 
 import { ChatIcon } from "@chakra-ui/icons";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Button, Flex, Text } from "@chakra-ui/react";
+import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 interface HeaderProps {
-  readonly isSignedIn: boolean;
+  readonly sessionData: Session;
 }
-export function Header({ isSignedIn }: HeaderProps) {
+
+export function Header({ sessionData }: HeaderProps) {
+  const isSignedIn = !!sessionData;
+
   return (
     <Flex
       backgroundColor="#0D0D0D"
@@ -26,15 +30,24 @@ export function Header({ isSignedIn }: HeaderProps) {
       </Link>
 
       {isSignedIn ? (
-        <Flex>
-          <Button
-            backgroundColor="#6EFA96"
-            _hover={{ backgroundColor: "#0AC77C" }}
-            color="#0D0D0D"
-            onClick={() => signOut()}
-          >
-            Sign out
-          </Button>
+        <Flex gap="1rem" alignItems="center">
+          {sessionData.user.image ? (
+            <Avatar src={sessionData.user.image} />
+          ) : null}
+          <Flex flexDir="column" alignItems="center">
+            <Text fontSize="0.7rem" color="white" fontWeight="bold">
+              {sessionData.user.email}
+            </Text>
+            <Button
+              size="sm"
+              variant="ghost"
+              _hover={{ backgroundColor: "#0AC77C" }}
+              color="white"
+              onClick={() => signOut()}
+            >
+              Sign out
+            </Button>
+          </Flex>
         </Flex>
       ) : (
         <Flex>

@@ -23,3 +23,16 @@ export const RegisterSchema = z
     message: `Password don't match`,
     path: ["confirmPassword"],
   });
+
+export const NewChatRoomSchema = z.object({
+  title: z.string().min(1, { message: "Title is required" }),
+  description: z.string().min(1, { message: "Description is required" }),
+});
+
+export const InviteNewUserSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "This must match a e-mail type" }),
+});

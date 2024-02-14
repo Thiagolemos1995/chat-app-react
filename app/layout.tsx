@@ -4,6 +4,7 @@ import { UiProvider } from "./providers/ChakraProvider";
 import { Header } from "./components/layout/Header";
 import { Box } from "@chakra-ui/react";
 import { auth } from "@/auth";
+import { Session } from "next-auth";
 
 export const metadata: Metadata = {
   title: "Chat App",
@@ -22,7 +23,7 @@ export default async function RootLayout({
       <AuthProvider>
         <body>
           <UiProvider>
-            <Header isSignedIn={!!session} />
+            <Header sessionData={session as Session} />
 
             <Box bgGradient="linear(to-t, #0D0D0D, #2D2D2D)">{children}</Box>
           </UiProvider>
